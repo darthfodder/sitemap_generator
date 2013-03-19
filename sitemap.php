@@ -1,22 +1,32 @@
 <?php
+
+/* XML Sitemap Generator 
+ * Notes: The ideal would be to have this generate an XML sitemap every 24 hours via a cron job
+ * 		   However, not all servers are configured to allow for this, so the map must be gernated on the fly
+ *
+ */
+
+// The Base URI for all URLs
+$baseURI = "http://www.marquette.edu/library";
+
 // Create the head information of the file
 printf("<?xml version='1.0' encoding='UTF-8'?> \n");
 printf("<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'> \n" );
 // List of folders and files to block from the site map
-$folders = array("siteindex.shtml", 'libhours.html', 'mobile', 'gjcp', 'LITOH', 'MMWIP', 'mulr', 'phil', 'staff', 'theses', 'trak', 'w3l', '.htaccess', '.DS_store', 'googleca270c8194369c4f.html', 'Website_training', "bak", "_cms", "_test", "_themes", "_vti", "_css", "_globalincludes", "_includes", "_js", "_assets", "_min", "_mm", "_notes", "_templates", "_test", "images");
+$folders = array("_assets", "_css", "_js");
 // List of approved file types
-$exts = array('html', 'shtml', 'htm', 'php');
+$exts = array("html", "shtml", "htm", "php");
 // Grab all directory information
 $di = new RecursiveDirectoryIterator(dirname(__FILE__));
 // Loop throught all driectories and sub-directories
-foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
+foreach (new RecursiveIteratorIterator($di) as $fileName => $file) {
 	// Set bool vars
 	$isInFolder = false;
 	$isFileType = false;
 	// Loop though the array of exclusions
 	foreach($folders as $folder){
 		// Check if the file is within the exclusions folder
-		$checkFolder = stripos($filename, $folder);
+		$checkFolder = stripos($fileName, $folder);
 		// If yes (will be an int) then set the var to true and stop the loop
 		if($checkFolder != false){
 			$isInFolder = true;
@@ -24,9 +34,9 @@ foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
 		}
 	}
 	// Get the extention of the file
-	$fileType = explode('/', $filename);
+	$fileType = explode("/", $fileName);
 	$fileType = end($fileType);
-	$fileType = explode('.', $fileType);
+	$fileType = explode(".", $fileType);
 	// The array should only be 2 (file and extention)
 	// If it is larger, most likely this is ._filename.ext file that shouldn't be in the index
 	if (count($fileType) == 2){
@@ -47,11 +57,11 @@ foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
 	// then add them to the doc
 	if ($isInFolder == false && $isFileType == true){
 		// Get last modified date
-		$modTime = filemtime($filename);
+		$modTime = filemtime($fileName);
 		$modTime = date("Y-m-d", $modTime);
 		// Remove server information from the file name
-		$filename = str_replace("/muweb/data/http/library/web", "", $filename);
-    	printf("<url> \n <loc>http://www.marquette.edu/library" . $filename . "</loc> \n <lastmod>" . $modTime . "</lastmod> \n </url> \n");
+		$fileName = str_replace("/muweb/data/http/library/web", "", $fileName);
+    	printf("<url> \n <loc>" . $baseURI . $fileName . "</loc> \n <lastmod>" . $modTime . "</lastmod> \n </url> \n");
 	}
 }
 printf('</urlset>');

@@ -2,7 +2,7 @@
 
 /* XML Sitemap Generator 
  * Notes: The ideal would be to have this generate an XML sitemap every 24 hours via a cron job
- * 		   However, not all servers are configured to allow for this, so the map must be gernated on the fly
+ * 		   However, not all servers are configured to allow for this, so the map must be generated on the fly
  *
  */
 

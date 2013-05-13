@@ -4,10 +4,16 @@
  * Notes: The ideal would be to have this generate an XML sitemap every 24 hours via a cron job
  * 		   However, not all servers are configured to allow for this, so the map must be generated on the fly
  *
+ *  @arg1- Base URI for site
+ *  
  */
 
 // The Base URI for all URLs
-$baseURI = "http://www.marquette.edu/library";
+$basseURI;
+if(count($argv) > 1)
+	$baseURI = $argv[1];
+else
+	$baseURI = "http://www.marquette.edu/library";
 
 // Create the head information of the file
 printf("<?xml version='1.0' encoding='UTF-8'?> \n");
@@ -52,7 +58,7 @@ foreach (new RecursiveIteratorIterator($di) as $fileName => $file) {
 			}
 		}
 	}
-	
+
 	// If the file is in an indexable folder and is a supported file type
 	// then add them to the doc
 	if ($isInFolder == false && $isFileType == true){
